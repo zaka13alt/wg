@@ -5,7 +5,7 @@
 # 2. Create the package.json configuration file
 with open("package.json", "w") as f:
     f.write('''{
-  "name": "your-totally-unique-package-name",
+  "name": "zaka13s-site",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module"
