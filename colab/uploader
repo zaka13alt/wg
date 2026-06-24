@@ -1,0 +1,586 @@
+# 1. Create a fresh project folder
+!mkdir -p my_html_package
+%cd my_html_package
+
+# 2. Create the package.json configuration file
+with open("package.json", "w") as f:
+    f.write('''{
+  "name": "your-totally-unique-package-name",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module"
+}''')
+
+# 3. Create the standard index.js library file
+with open("index.js", "w") as f:
+    f.write('''// You can export functions or leave this file empty
+export const version = "1.0.0";
+''')
+
+# 4. Create the index.html placeholder file
+with open("index.html", "w") as f:
+    f.write('''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zakas homepage</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --section-bg: #1a1a1a;
+            --accent-red: #e63946;
+            --hover-red: #b81d24;
+            --text-color: #ffffff;
+            --border-color: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .section {
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .section-header {
+            width: 100%;
+            background-color: #111;
+            color: var(--text-color);
+            border: none;
+            outline: none;
+            padding: 20px;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header:hover {
+            background-color: var(--accent-red);
+            color: #fff;
+        }
+
+        .section-content {
+            display: none;
+            padding: 20px;
+            background-color: #151515;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .section.active .section-content {
+            display: block;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .fullscreen-btn {
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .fullscreen-btn:hover {
+            background-color: var(--hover-red);
+        }
+
+        .iframe-container {
+            position: relative;
+            width: 100%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: 2px solid var(--accent-red);
+            border-radius: 6px;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        .close-fullscreen-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .close-fullscreen-btn:hover {
+            background-color: var(--hover-red);
+        }
+
+        .iframe-container.window-fullscreen iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            border: none;
+            border-radius: 0;
+        }
+
+        .iframe-container.window-fullscreen .close-fullscreen-btn {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Section 1 -->
+        <div class="section">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Games</span>
+                <span>▼</span>
+            </button>
+            <div class="section-content">
+                <div class="controls-wrapper">
+                    <button class="fullscreen-btn" onclick="goWindowFullscreen('container1')">Full Screen</button>
+                </div>
+                <div id="container1" class="iframe-container">
+                    <button class="close-fullscreen-btn" onclick="exitWindowFullscreen('container1')">✕ Close Fullscreen</button>
+                    <iframe src="https://cdn.esm.sh/gh/zaka13X/zaka13X@1cf4201/games/SingleFile.html" title="Section 1 Content"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Ultraviolet</span>
+                <span>▼</span>
+            </button>
+            <div class="section-content">
+                <div class="controls-wrapper">
+                    <button class="fullscreen-btn" onclick="goWindowFullscreen('container2')">Full Screen</button>
+                </div>
+                <div id="container2" class="iframe-container">
+                    <button class="close-fullscreen-btn" onclick="exitWindowFullscreen('container2')">✕ Close Fullscreen</button>
+                    <iframe src="https://zaka.qzz.io/active/" title="Section 2 Content"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Scramjet</span>
+                <span>▼</span>
+            </button>
+            <div class="section-content">
+                <div class="controls-wrapper">
+                    <button class="fullscreen-btn" onclick="goWindowFullscreen('container3')">Full Screen</button>
+                </div>
+                <div id="container3" class="iframe-container">
+                    <button class="close-fullscreen-btn" onclick="exitWindowFullscreen('container3')">✕ Close Fullscreen</button>
+                    <iframe src="https://gcore.jsdelivr.net/gh/zaka13X/sj/working.svg" title="Section 3 Content"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="section">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Blob Cloak</span>
+                <span>▼</span>
+            </button>
+            <div class="section-content">
+                <div class="controls-wrapper">
+                    <button class="fullscreen-btn" onclick="goWindowFullscreen('container4')">Full Screen</button>
+                </div>
+                <div id="container4" class="iframe-container">
+                    <button class="close-fullscreen-btn" onclick="exitWindowFullscreen('container4')">✕ Close Fullscreen</button>
+                    <iframe src="https://cdn.esm.sh/gh/zaka13X/zaka13X@30784c2/panick/cdnblob.html" title="Section 4 Content"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="section">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Login Cloak</span>
+                <span>▼</span>
+            </button>
+            <div class="section-content">
+                <div class="controls-wrapper">
+                    <button class="fullscreen-btn" onclick="goWindowFullscreen('container5')">Full Screen</button>
+                </div>
+                <div id="container5" class="iframe-container">
+                    <button class="close-fullscreen-btn" onclick="exitWindowFullscreen('container5')">✕ Close Fullscreen</button>
+                    <iframe src="https://zaka.qzz.io/panick" title="Section 5 Content"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(button) {
+            const section = button.parentElement;
+            const isOpen = section.classList.contains('active');
+            
+            const allSections = document.querySelectorAll('.section');
+            allSections.forEach(sec => sec.classList.remove('active'));
+
+            if (!isOpen) {
+                section.classList.add('active');
+            }
+        }
+
+        function goWindowFullscreen(containerId) {
+            const container = document.getElementById(containerId);
+            container.classList.add('window-fullscreen');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function exitWindowFullscreen(containerId) {
+            const container = document.getElementById(containerId);
+            container.classList.remove('window-fullscreen');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>''')
+
+# 5. Create the game.html placeholder file
+with open("game.html", "w") as f:
+    f.write('''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zakas stuff</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Particle Background */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10px) translateX(0);
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% {
+                transform: translateY(100vh) translateX(var(--random-x));
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Grid Container */
+        .grid-container {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            padding: 20px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Game Card */
+        .game-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 2px solid #333;
+            border-radius: 12px;
+            height: 160px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: #fff;
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .game-card img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .game-card span {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ddd;
+            word-break: break-all;
+        }
+
+        /* Iframe Modal */
+        #iframe-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: #111;
+            border-bottom: 2px solid #333;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: #222;
+            color: #fff;
+            border: 2px solid #444;
+            font-size: 1.8rem;
+            font-weight: bold;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background-color: #ff3333;
+            border-color: #ff3333;
+            transform: scale(1.05);
+        }
+
+        iframe {
+            width: 100%;
+            height: calc(100vh - 75px);
+            border: none;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particle Container -->
+    <div id="particles"></div>
+
+    <header>
+        <h1></h1>
+    </header>
+
+    <!-- Game Cards -->
+    <div class="grid-container" id="cards-container"></div>
+
+    <!-- Iframe Modal -->
+    <div id="iframe-modal">
+        <div class="modal-header">
+            <span class="modal-title" id="modal-title">Game Title</span>
+            <button class="close-btn" onclick="closeGame()">&times;</button>
+        </div>
+        <iframe id="game-frame" src=""></iframe>
+    </div>
+
+    <script>
+        // --- Particle Generation ---
+        const particleContainer = document.getElementById('particles');
+        const particleCount = 60;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 3 + 1;
+            const duration = Math.random() * 5 + 5;
+            const delay = Math.random() * 5;
+            const startX = Math.random() * 100;
+            const randomXOffset = (Math.random() - 0.5) * 200;
+
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${startX}%`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.setProperty('--random-x', `${randomXOffset}px`);
+
+            particleContainer.appendChild(particle);
+        }
+
+        // --- Central Game List Configuration ---
+        // Change the 'name' and 'url' fields below for your games.
+        // The script will automatically pull the favicon based on the URL provided.
+        const games = [
+            { name: "Soundboard", url: "https://rawcdn.githack.com/genizy/soundboard/1b365ccfe8417bc3349426b1be40dff77f6a6437/index.html" },
+            { name: "Scramjet", url: "https://gcore.jsdelivr.net/gh/zaka13X/sj/working.svg" },
+            { name: "Eaglercraft 1.8", url: "https://gcore.jsdelivr.net/gh/zaka13X/zakariya99999.github.io@main/loader_1.8.8_fixed.svg" },
+            { name: "Eaglercraft 1.12.2", url: "https://gcore.jsdelivr.net/gh/zaka13X/zakariya99999.github.io@main/loader_1.12.2_fixed.svg" },
+            { name: "Ultraviolet", url: "https://esm.sh/gh/zaka13X/zaka13X@3d39bbf/active/index.html" },
+            { name: "1v1.lol", url: "https://raw.esm.sh/gh/scheng123321/1v1-lol@dd12bf6/index.html" },
+            { name: "Krunker (prob not gonna work)", url: "https://strongdog.com/krunker.io/index.html" },
+            { name: "Tuff Client Eaglercraft", url: "https://games.zaka.qzz.io/games/tuff-client" },
+            { name: "Rammerhead (May not work)", url: "https://rammerheadforlife.ermestel.com/" },
+            { name: "Contact Me", url: "https://games.zaka.qzz.io/games/contact-me" },
+            { name: "Retro Bowl", url: "https://raw.esm.sh/gh/Alexx743/Alexx743-games@69a02f9/blob/main/retrobowl.html/" },
+            { name: "Scramjet (mirror 2)", url: "https://originfastly.jsdelivr.net/gh/zaka13X/sj/working.svg" },
+            { name: "Invidious", url: "https://example.com3" },
+            { name: "Credits", url: "https://games.zaka.qzz.io/games/credits.html" },
+            { name: "Ultraviolet 2", url: "https://raw.esm.sh/gh/zaka13X/zaka13X@3d39bbf/active/index.html" },
+            { name: "Our Discord", url: "data:text/html;base64,PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+Sm9pbiB0aGUgRGlzY29yZCE8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5IG9ubG9hZD0iYWxlcnQoJ0pvaW4gdGhlIERpc2NvcmQgYXQgaHR0cHM6Ly9kaXNjb3JkLmdnL2dYSEJORm04cyEnKSI+Cgo8L2JvZHk+CjwvaHRtbD4K" },
+            { name: "more games will be coming soon!", url: "https://example.com7" },
+            { name: "not yet!", url: "data://example.com8" },
+            { name: "not yet!", url: "data://example.com9" },
+            { name: "not yet!", url: "data://example.com0" },
+            { name: "not yet!", url: "data://example.com1" },
+            { name: "not yet!", url: "data://example.com2" },
+            { name: "not yet!", url: "data://example.com3" },
+            { name: "not yet!", url: "data://example.com4" },
+            { name: "not yet!", url: "data://example.com5" }
+        ];
+
+        const container = document.getElementById('cards-container');
+
+        games.forEach((game) => {
+            const card = document.createElement('div');
+            card.classList.add('game-card');
+            
+            // Google S2 Favicon service pulls based on your configured URL
+            const faviconUrl = `https://www.google.com/s2/favicons?domain{encodeURIComponent(game.url)}`;
+
+            card.innerHTML = `
+                <img src="${faviconUrl}" alt="${game.name} icon" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://w3.org\' width=\'64\' height=\'64\' fill=\'%23555\' viewBox=\'0 0 16 16\'><path d=\'M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM6.67 3.5c.09-.38.6-.38.68 0L7.5 5.5l1.5.1c.3.02.42.42.2.64L8 7.5l.5 1.8c.1.35-.3.6-.5.4l-.8-.8-1 .7c-.25.2-.5 0-.3-.3l.5-1.5-1-1.3c-.2-.2-.1-.5.2-.6l1.5-.1.5-1.5z\'/></svg>'">
+                <span>${game.name}</span>
+            `;
+
+            card.addEventListener('click', () => {
+                openGame(game.url, game.name);
+            });
+
+            container.appendChild(card);
+        });
+
+        function openGame(url, title) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('game-frame').src = url;
+            document.getElementById('iframe-modal').style.display = 'flex';
+        }
+
+        function closeGame() {
+            document.getElementById('iframe-modal').style.display = 'none';
+            document.getElementById('game-frame').src = '';
+        }
+    </script>
+</body>
+</html>''')
+
+# 6. Create the index.svg placeholder file
+with open("index.svg", "w") as f:
+    f.write('''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%">
+  <foreignObject x="0" y="0" width="100%" height="100%">
+    <iframe xmlns="http://www.w3.org/1999/xhtml" 
+            src="data:text/html,%3C!DOCTYPE%20html%3E%0A%3Chtml%20lang%3D%22en%22%3E%0A%3Chead%3E%0A%20%20%20%20%3Cmeta%20charset%3D%22UTF-8%22%3E%0A%20%20%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1.0%22%3E%0A%20%20%20%20%3Ctitle%3Ezakas%20homepage%3C%2Ftitle%3E%0A%20%20%20%20%3Cstyle%3E%0A%20%20%20%20%20%20%20%20%3Aroot%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20--bg-color%3A%20%230a0a0a%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20--section-bg%3A%20%231a1a1a%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20--accent-red%3A%20%23e63946%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20--hover-red%3A%20%23b81d24%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20--text-color%3A%20%23ffffff%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20--border-color%3A%20%23333333%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-family%3A%20'Segoe%20UI'%2C%20Tahoma%2C%20Geneva%2C%20Verdana%2C%20sans-serif%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20var(--bg-color)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20var(--text-color)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%2020px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20flex%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20justify-content%3A%20center%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.container%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20max-width%3A%20800px%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.section%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20var(--section-bg)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border%3A%201px%20solid%20var(--border-color)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border-radius%3A%208px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin-bottom%3A%2015px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20transition%3A%20all%200.3s%20ease%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.section-header%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20%23111%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20var(--text-color)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20outline%3A%20none%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%2020px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20text-align%3A%20left%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-size%3A%201.1rem%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-weight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20cursor%3A%20pointer%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20transition%3A%20background%200.3s%20ease%2C%20color%200.3s%20ease%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20flex%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20justify-content%3A%20space-between%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20align-items%3A%20center%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.section-header%3Ahover%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20var(--accent-red)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20%23fff%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.section-content%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20none%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%2020px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20%23151515%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border-top%3A%201px%20solid%20var(--border-color)%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.section.active%20.section-content%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20block%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.controls-wrapper%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20flex%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20justify-content%3A%20flex-end%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin-bottom%3A%2010px%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.fullscreen-btn%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20var(--accent-red)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20white%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%208px%2016px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-size%3A%200.85rem%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-weight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border-radius%3A%204px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20cursor%3A%20pointer%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20transition%3A%20background%200.2s%20ease%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.fullscreen-btn%3Ahover%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20var(--hover-red)%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.iframe-container%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20position%3A%20relative%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20iframe%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20400px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border%3A%202px%20solid%20var(--accent-red)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border-radius%3A%206px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20%23fff%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20box-sizing%3A%20border-box%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.close-fullscreen-btn%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20none%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20position%3A%20fixed%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20top%3A%2020px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20right%3A%2020px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20z-index%3A%2010000%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20var(--accent-red)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20white%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%2010px%2020px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-size%3A%201rem%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-weight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border-radius%3A%204px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20cursor%3A%20pointer%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20box-shadow%3A%200%204px%2010px%20rgba(0%2C0%2C0%2C0.5)%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.close-fullscreen-btn%3Ahover%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20background-color%3A%20var(--hover-red)%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.iframe-container.window-fullscreen%20iframe%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20position%3A%20fixed%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20top%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20left%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20width%3A%20100vw%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20100vh%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20z-index%3A%209999%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20border-radius%3A%200%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20.iframe-container.window-fullscreen%20.close-fullscreen-btn%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20display%3A%20block%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%0A%20%20%20%20%3Cdiv%20class%3D%22container%22%3E%0A%20%20%20%20%20%20%20%20%3C!--%20Section%201%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22section-header%22%20onclick%3D%22toggleSection(this)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3EGames%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3E%E2%96%BC%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section-content%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22controls-wrapper%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22fullscreen-btn%22%20onclick%3D%22goWindowFullscreen('container1')%22%3EFull%20Screen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22container1%22%20class%3D%22iframe-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22close-fullscreen-btn%22%20onclick%3D%22exitWindowFullscreen('container1')%22%3E%E2%9C%95%20Close%20Fullscreen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ciframe%20src%3D%22https%3A%2F%2Fcdn.esm.sh%2Fgh%2Fzaka13X%2Fzaka13X%401cf4201%2Fgames%2FSingleFile.html%22%20title%3D%22Section%201%20Content%22%3E%3C%2Fiframe%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%0A%20%20%20%20%20%20%20%20%3C!--%20Section%202%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22section-header%22%20onclick%3D%22toggleSection(this)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3EUltraviolet%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3E%E2%96%BC%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section-content%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22controls-wrapper%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22fullscreen-btn%22%20onclick%3D%22goWindowFullscreen('container2')%22%3EFull%20Screen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22container2%22%20class%3D%22iframe-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22close-fullscreen-btn%22%20onclick%3D%22exitWindowFullscreen('container2')%22%3E%E2%9C%95%20Close%20Fullscreen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ciframe%20src%3D%22https%3A%2F%2Fzaka.qzz.io%2Factive%2F%22%20title%3D%22Section%202%20Content%22%3E%3C%2Fiframe%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%0A%20%20%20%20%20%20%20%20%3C!--%20Section%203%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22section-header%22%20onclick%3D%22toggleSection(this)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3EScramjet%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3E%E2%96%BC%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section-content%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22controls-wrapper%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22fullscreen-btn%22%20onclick%3D%22goWindowFullscreen('container3')%22%3EFull%20Screen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22container3%22%20class%3D%22iframe-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22close-fullscreen-btn%22%20onclick%3D%22exitWindowFullscreen('container3')%22%3E%E2%9C%95%20Close%20Fullscreen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ciframe%20src%3D%22https%3A%2F%2Fgcore.jsdelivr.net%2Fgh%2Fzaka13X%2Fsj%2Fworking.svg%22%20title%3D%22Section%203%20Content%22%3E%3C%2Fiframe%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%0A%20%20%20%20%20%20%20%20%3C!--%20Section%204%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22section-header%22%20onclick%3D%22toggleSection(this)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3EBlob%20Cloak%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3E%E2%96%BC%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section-content%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22controls-wrapper%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22fullscreen-btn%22%20onclick%3D%22goWindowFullscreen('container4')%22%3EFull%20Screen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22container4%22%20class%3D%22iframe-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22close-fullscreen-btn%22%20onclick%3D%22exitWindowFullscreen('container4')%22%3E%E2%9C%95%20Close%20Fullscreen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ciframe%20src%3D%22https%3A%2F%2Fcdn.esm.sh%2Fgh%2Fzaka13X%2Fzaka13X%4030784c2%2Fpanick%2Fcdnblob.html%22%20title%3D%22Section%204%20Content%22%3E%3C%2Fiframe%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%0A%20%20%20%20%20%20%20%20%3C!--%20Section%205%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22section-header%22%20onclick%3D%22toggleSection(this)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3ELogin%20Cloak%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3E%E2%96%BC%3C%2Fspan%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22section-content%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22controls-wrapper%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22fullscreen-btn%22%20onclick%3D%22goWindowFullscreen('container5')%22%3EFull%20Screen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22container5%22%20class%3D%22iframe-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%22close-fullscreen-btn%22%20onclick%3D%22exitWindowFullscreen('container5')%22%3E%E2%9C%95%20Close%20Fullscreen%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ciframe%20src%3D%22https%3A%2F%2Fzaka.qzz.io%2Fpanick%22%20title%3D%22Section%205%20Content%22%3E%3C%2Fiframe%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%3C%2Fdiv%3E%0A%0A%20%20%20%20%3Cscript%3E%0A%20%20%20%20%20%20%20%20function%20toggleSection(button)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20section%20%3D%20button.parentElement%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20isOpen%20%3D%20section.classList.contains('active')%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20allSections%20%3D%20document.querySelectorAll('.section')%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20allSections.forEach(sec%20%3D%3E%20sec.classList.remove('active'))%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(!isOpen)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20section.classList.add('active')%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20function%20goWindowFullscreen(containerId)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20container%20%3D%20document.getElementById(containerId)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20container.classList.add('window-fullscreen')%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.body.style.overflow%20%3D%20'hidden'%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20function%20exitWindowFullscreen(containerId)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20container%20%3D%20document.getElementById(containerId)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20container.classList.remove('window-fullscreen')%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.body.style.overflow%20%3D%20'auto'%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fscript%3E%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E" 
+            sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-downloads"
+            style="border: none; width: 100%; height: 100%; margin: 0; padding: 0;">
+    </iframe>
+  </foreignObject>
+</svg>''')
+
+print("All asset files successfully created in your Google Colab workspace!")
+      
