@@ -1,0 +1,6 @@
+body {
+    background-color: #000000; /* Changes the entire background to black */
+    color: #ffffff;            /* Changes the text to white so it remains readable */
+    margin: 0;                 /* Removes default browser margins to prevent white borders */
+    min-height: 100vh;         /* Ensures the black background covers the full screen height */
+}
